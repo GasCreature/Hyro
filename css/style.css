@@ -26,6 +26,13 @@ html, body {
   	height: auto;
 }
 
+.CodeMirror-hscrollbar {
+	bottom: 0;
+	right: 50% !important;
+	position:fixed;
+}
+
+
 .CodeMirror-activeline-background {
   	background: #e8f2ff;
 }
@@ -147,11 +154,11 @@ div::-webkit-scrollbar-thumb:horizontal {
 	color: #777;
 	border: 1px solid #777;
 	border-radius: 3px;
-	right: 1%;
+	right: 5px;
+	bottom: 5px;
 	position: fixed;
 	z-index: 100;
 	cursor: default;
-	margin-top: 1%;
 	opacity: 0.2;
 	transition: opacity 0.5s;
 }
