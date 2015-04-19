@@ -366,6 +366,7 @@ $(document).ready(function(e) {
 		styleActiveLine: true,
 		highlightSelectionMatches: true
     });
+	emmetCodeMirror(cm);
 
 
 	$(document).on('click', ".file-tab", function(e) {
