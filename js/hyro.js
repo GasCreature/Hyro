@@ -102,12 +102,27 @@ function openAction(text, path, opened) {
 }
 
 function updatePreview(cm) {
-	var doc = cm.getDoc();
+	var doc = cm.getDoc().getValue();
 
-	// get iframe document
+    // create tmp document offline so that we can add <base> before rendering it
+	var page = document.implementation.createHTMLDocument();
+	page.open();
+	page.write(doc;
+	page.close();
+
+	var path = $(".file-tab.selected").find("label")[0].innerText;
+
+	var base = $("<base/>", {
+		href: require('path').dirname(path) + "/"
+	});
+
+	$(page).find("head").prepend(base);
+
+	// get preview iframe document
 	var preview = $("#code-view").contents()[0];
+
 	preview.open();
-	preview.write(doc.getValue());
+	preview.write((new XMLSerializer()).serializeToString(page));
 	preview.close();
 }
 
