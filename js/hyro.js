@@ -21,32 +21,32 @@ function checkHex(value){
 
 //saveAction will be used for hotkeys (future) as well as the 'Save' menu item
 function saveAction() {
-	e = $(".file-tab[title=selected]").find("span").text();
+	e = $(".file-tab.selected").find("span").text();
 
 	if (e[e.length - 1] == "*") {
-		$(".file-tab[title=selected]").find("span").text(e.substring(0, e.length - 1))
+		$(".file-tab.selected").find("span").text(e.substring(0, e.length - 1))
 	}
 
-	selected = $(".file-tab[title=selected]")
+	selected = $(".file-tab.selected")
 
 	if (selected.attr("alt") == "open") {
-		path = $(".file-tab[title=selected]").find("label")[0].innerText;
+		path = $(".file-tab.selected").find("label")[0].innerText;
 	} else {
-		path = baseDIR + $(".file-tab[title=selected]").find("label")[0].innerText;
+		path = baseDIR + $(".file-tab.selected").find("label")[0].innerText;
 		console.log(path);
 		$(file_tab).attr("alt", "open");
 	}
 
-	text = $(".file-tab[title=selected]").find("code")[0].innerText;
-	file = $(".file-tab[title=selected]").find("span")[0].innerText;
+	text = $(".file-tab.selected").find("code")[0].innerText;
+	file = $(".file-tab.selected").find("span")[0].innerText;
 
 	fs.openSync(path, 'w');
 	fs.writeFile(path, text, function(err){
 		if (err) throw err;
 		console.log("saved "+ file + " " + path);
 
-		$(".file-tab[title=selected]").find("span").text(file);
-		$(".file-tab[title=selected]").find("code").text(text)
+		$(".file-tab.selected").find("span").text(file);
+		$(".file-tab.selected").find("code").text(text)
 	});
 }
 
@@ -146,9 +146,9 @@ $(document).ready(function(){
 		  				paths.push(files[i].path);
 		  			}
 
-		  			paths.forEach(function(path){
-		  				x+=1;
-		  				if (x>1) return false;
+		  			paths.forEach(function(path) {
+		  				x += 1;
+		  				if (x > 1) return false;
 		  				console.log(path);
 		  				buffer_data = fs.readFileSync(path);
 		  				text = buffer_data + '';
@@ -168,14 +168,14 @@ $(document).ready(function(){
 		save = new gui.MenuItem({
 			label: 'Save As',
 			click: function() {
-				e = $(".file-tab[title=selected]").find("span").text();
+				e = $(".file-tab.selected").find("span").text();
 
 				if (e[e.length - 1] == "*") {
-					$(".file-tab[title=selected]").find("span").text(e.substring(0, e.length - 1))
+					$(".file-tab.selected").find("span").text(e.substring(0, e.length - 1))
 				}
 
 				saveDialog = $("#saveDialog");
-				path = $(".file-tab[title=selected]").find("label")[0].innerText;
+				path = $(".file-tab.selected").find("label")[0].innerText;
 				saveDialog.attr("nwworkingdir", path)
 
 				chooseFile('#saveDialog');
@@ -185,18 +185,16 @@ $(document).ready(function(){
 					var files = $('#saveDialog')[0].files;
 					new_path = files[0].path;
 					new_name = files[0].name;
-					text = $(".file-tab[title=selected]").find("code")[0].innerText;
+					text = $(".file-tab.selected").find("code")[0].innerText;
 					console.log("\n"+text+"\n")
-					fs.writeFile(new_path, text, function(err){
+					fs.writeFile(new_path, text, function(err) {
 						if (err) throw err;
 						console.log("saved "+ new_name + " " + new_path);
 
 
-						$(".file-tab[title=selected]").find("span").text(new_name);
-						$(".file-tab[title=selected]").find("label").text(new_path);
-						$(".file-tab[title=selected]").find("code").text(text)
+						$(".file-tab.selected").find("span").text(new_name);
+						$(".file-tab.selected").find("label").text(new_path);
 						saveDialog.replaceWith(saveDialog=saveDialog.clone(true));
-
 					});
 
 				});
@@ -225,7 +223,7 @@ $(document).ready(function(){
 		fileSubmenu.append(new gui.MenuItem({
 			label: 'Close File',
 			click: function() {
-				$('.file-tab[title=selected]').remove();
+				$('.file-tab.selected').remove();
 				if ($(".file-tab")[0]) {
 					return;
 				} else {
@@ -242,11 +240,11 @@ $(document).ready(function(){
 		viewSubmenu.append(new gui.MenuItem({
 			label: 'Change Color Theme',
 			click: function() {
-				jPrompt("(HEX only)\ndefault: "+default_color , "", 'Change UI Color', function(r) {
+				jPrompt("(HEX only)\ndefault: " + default_color , "", 'Change UI Color', function(r) {
 				    if(r) {
 				    	if (checkHex(r)) {
 					    	color = r;
-					    	$('.file-tab[title=selected]').trigger('click');
+					    	$('.file-tab.selected').trigger('click');
 					    	$("#file-nav").css("background-color", r)
 					    	$('.file-tab').hover(function(){
 	      						$(this).css('color', r);
@@ -272,7 +270,7 @@ $(document).ready(function(){
 		remove_file = new gui.MenuItem({
 			label: 'Remove File',
 			click: function(event){
-				$('.file-tab[title=selected]').remove();
+				$('.file-tab.selected').remove();
 				if ($(".file-tab")[0]) {
 					return;
 				} else {
@@ -287,15 +285,15 @@ $(document).ready(function(){
 		rename_file = new gui.MenuItem({
 			label: 'Rename File',
 			click: function() {
-				name = $('.file-tab[title=selected]').find('span')[0].innerText.replace("*", '');
+				name = $('.file-tab.selected').find('span')[0].innerText.replace("*", '');
 				msg = "Rename " + name + "?";
 				jPrompt('New name: ', "", msg, function(r) {
 			    	if(r) {
-				    	$('.file-tab[title=selected]').find('span')[0].innerText = r + "*";
-				    	a_path = $(".file-tab[title=selected]").find("label")[0].innerText.split("\\")
+				    	$('.file-tab.selected').find('span')[0].innerText = r + "*";
+				    	a_path = $(".file-tab.selected").find("label")[0].innerText.split("\\")
 				    	a_path.pop()
 				    	a_path.push("//"+r)
-				    	$(".file-tab[title=selected]").find("label")[0].innerText = a_path.join("\\")
+				    	$(".file-tab.selected").find("label")[0].innerText = a_path.join("\\")
 			    	}
 				});
 			}
@@ -369,15 +367,13 @@ $(document).ready(function(e) {
 
 	$(document).on('click', ".file-tab", function(e) {
 
-		// previous tab (not available on start), store doc there
-		var prev = $(".file-tab[title=selected]")
+		// previous tab, store previous doc there
+		var prev = $(".file-tab.selected")
+			.removeClass("selected")
 			.data("cm-doc", cm.getDoc());
 
-		// all tabs
-		$(".file-tab").attr("title", "none");
-
 		// clicked tab, read doc from it
-		$(this).attr("title", "selected");
+		$(this).addClass("selected");
 
 		if ($(this).is(prev)) {
 			console.log("already shown");
@@ -415,14 +411,14 @@ $(document).ready(function(e) {
 		preview.write(doc.getValue());
 		preview.close();
 
-		e = $(".file-tab[title=selected]").find("span").text();
+		e = $(".file-tab.selected").find("span").text();
 
 		// add "*" if contents are modified
 		if (e[e.length - 1] != "*") {
-			$(".file-tab[title=selected]").find("span").text($(".file-tab[title=selected]").find("span").text() + "*");
+			$(".file-tab.selected").find("span").text($(".file-tab.selected").find("span").text() + "*");
 		}
 
-		var file = $(".file-tab[title=selected]").find("span").text()
+		var file = $(".file-tab.selected").find("span").text()
 		$("#view-file-name").text(file.replace("*", ""));
 	});
 

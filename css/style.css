@@ -58,12 +58,12 @@ div::-webkit-scrollbar-thumb:horizontal {
 .file-tab {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
-	background-color: #fff;
 	padding: 5px 5px 0px 5px;
 	margin-left: 5px;
 	margin-right: 5px;
 	margin-top: 5px;
-	border-bottom: 1% solid #fff;
+	background-color: gray;
+	border-bottom: 1px solid #E36D6D;
 	display: inline-block;
 	opacity: 1;
 	cursor: pointer;
@@ -76,13 +76,17 @@ div::-webkit-scrollbar-thumb:horizontal {
 	color: #E36D6D;
 }
 
+.file-tab.selected {
+	background-color: white;
+	border-bottom: 1px solid white;
+}
+
 #file-nav {
 	overflow-x: scroll;
 	overflow-y: hidden;
 	width: auto;
     min-height: 28px;
     white-space: nowrap;	
-    padding-left: 28px;
 	background-color: #E36D6D;
 	border-bottom: 1px solid #ccc;
 	position: relative;
