@@ -1,8 +1,7 @@
 {
-  "main": "index.html",
   "name": "hyro",
   "description": "Lightweight real-time HTML5 editor",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "keywords": [
     "hyro",
     "html",
@@ -13,6 +12,7 @@
     "minimalist",
     "lightweight"
   ],
+  "main": "index.html",
   "window": {
     "title": "Hyro",
     "toolbar": false,
@@ -24,15 +24,16 @@
     "min_width": 400,
     "min_height": 200
   },
+  "scripts": {
+      "start": "nw"
+  },
   "webkit": {
     "plugin": true
   },
   "maintainers": [
     {
-      "name": "Jared Wright",
-      "email": "jawerty210@gmail.com",
-      "web": "http://jawerty.github.io",
-      "feedback": "https://github.com/jawerty/Hyro/issues"
+      "name": "Michael Brade",
+      "email": "brade@kde.org"
     }
   ],
   "licenses": [
@@ -41,11 +42,11 @@
       "url": "http://opensource.org/licenses/MIT"
     }
   ],
-  "bugs": "https://github.com/jawerty/Hyro/issues",
+  "bugs": "https://github.com/michael-brade/Hyro/issues",
   "repository": [
     {
       "type": "git",
-      "url": "git@github.com:jawerty/Hyro.git"
+      "url": "git@github.com:michael-brade/Hyro.git"
     }
   ],
   "developmentMode": true,
