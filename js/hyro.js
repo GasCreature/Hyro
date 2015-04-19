@@ -1,7 +1,7 @@
 /*
 Hyro Editor
 Last change Oct 2013
-Developer: Jared Wright @jawerty 
+Developer: Jared Wright @jawerty
 */
 
 //require's and global variables
@@ -11,25 +11,10 @@ var util = require('util');
 var color = "#E36D6D";
 var default_color = "#E36D6D";
 
-//change directory settings per user platform
-if (process.platform === 'darwin') {
-	gui.Window.get().menu = new gui.Menu({ type: 'menubar' });
-	console.log('mac')
-	baseDIR = process.env.HOME
 
-} else if (process.platform === 'win32') {
-	gui.Window.get().menu = new gui.Menu({ type: 'menubar' });
-	console.log('windows')
-	baseDIR = process.env.HOME
+baseDIR = process.env.HOME
+console.log(baseDIR);
 
-} else {
-	var user_menu = new gui.Menu({ type: 'menubar' });
-	gui.Window.get().menu = user_menu;
-	console.log('not windows or mac')
-	baseDIR = process.env.HOME
-}
-
-console.log(baseDIR)
 function checkHex(value){
 	return /^#([A-Fa-f0-9]{3}$)|([A-Fa-f0-9]{6}$)/.test(value)
 }
@@ -51,7 +36,7 @@ function saveAction() {
 		console.log(path);
 		$(file_tab).attr("alt", "open");
 	}
-	
+
 	text = $(".file-tab[title=selected]").find("code")[0].innerText;
 	file = $(".file-tab[title=selected]").find("span")[0].innerText;
 
@@ -63,13 +48,13 @@ function saveAction() {
 		$(".file-tab[title=selected]").find("span").text(file);
 		$(".file-tab[title=selected]").find("code").text(text)
 	});
-} 
+}
 
-//used to trigger the file input dialog		
+//used to trigger the file input dialog
 function chooseFile(name) {
 	var chooser = $(name);
 
-	chooser.trigger('click');  
+	chooser.trigger('click');
 }
 
 //will append a new file tab with the file name + code
@@ -86,7 +71,7 @@ function appendFile(text, path, opened) {
 	$(file_tab).attr("class", "file-tab");
 	$(file_tab).attr("id", file+amount);
 	if (opened == true) $(file_tab).attr("alt", "open");
-	
+
 	span = document.createElement('span')
 	$(span).text(file)
 
@@ -108,7 +93,7 @@ function appendFile(text, path, opened) {
 
 //central functions init() and main()
 
-$(document).ready(function(){	
+$(document).ready(function(){
 	(function init() {
 		// tell when the view is initiated
 		console.log('initialized');
@@ -116,7 +101,6 @@ $(document).ready(function(){
 
 
 	(function main(){
-		var menu = new gui.Window.get().menu;
 
 		/**menu item creation and handling**/
 		fileItem = new gui.MenuItem({
@@ -132,7 +116,7 @@ $(document).ready(function(){
 		/**submenu creation and handling**/
 		var fileSubmenu = new gui.Menu();
 
-		fileSubmenu.append(new gui.MenuItem({ 
+		fileSubmenu.append(new gui.MenuItem({
 			label: 'New File',
 			click: function() {
 				appendFile("<!DOCTYPE html>\n<html>\n<head>\n\n</head>\n<body>\n\n</body>\n</html>", "/untitled.html", false);
@@ -140,7 +124,7 @@ $(document).ready(function(){
 			}
 		}));
 
-		fileSubmenu.append(new gui.MenuItem({ 
+		fileSubmenu.append(new gui.MenuItem({
 			label: 'Open',
 			click: function() {
 				chooseFile('#openDialog');
@@ -148,7 +132,7 @@ $(document).ready(function(){
 				var x = 0
 				openDialog = $('#openDialog')
 				$('#openDialog').change(function(e) {
-					
+
 					var paths = [];
 					var files = $('#openDialog')[0].files;
 
@@ -165,17 +149,17 @@ $(document).ready(function(){
 						appendFile(text, path, true);
 						openDialog.replaceWith(openDialog=openDialog.clone(true));
 						return true;
-		  			}); 
+		  			});
 				})
-			} 
+			}
 		}));
 
-		fileSubmenu.append(new gui.MenuItem({ 
+		fileSubmenu.append(new gui.MenuItem({
 			label: 'Save',
 			click: saveAction
 		}));
 
-		save = new gui.MenuItem({ 
+		save = new gui.MenuItem({
 			label: 'Save As',
 			click: function() {
 				e = $(".file-tab[title=selected]").find("span").text();
@@ -189,8 +173,8 @@ $(document).ready(function(){
 				saveDialog.attr("nwworkingdir", path)
 
 				chooseFile('#saveDialog');
-				
-				
+
+
 				$("#saveDialog").change(function(e){
 					var files = $('#saveDialog')[0].files;
 					new_path = files[0].path;
@@ -215,16 +199,16 @@ $(document).ready(function(){
 
 		fileSubmenu.append(save);
 
-		fileSubmenu.append(new gui.MenuItem({ 
+		fileSubmenu.append(new gui.MenuItem({
 			label: 'New Window',
 			click: function() {
 				var win = gui.Window.get();
 
 				new_win = gui.Window.open('index.html', {});
-			} 
+			}
 		}));
 
-		fileSubmenu.append(new gui.MenuItem({ 
+		fileSubmenu.append(new gui.MenuItem({
 			label: 'Close Window',
 			click: function() {
 				var win = gui.Window.get();
@@ -232,7 +216,7 @@ $(document).ready(function(){
 			}
 		}));
 
-		fileSubmenu.append(new gui.MenuItem({ 
+		fileSubmenu.append(new gui.MenuItem({
 			label: 'Close File',
 			click: function() {
 				$('.file-tab[title=selected]').remove();
@@ -243,14 +227,14 @@ $(document).ready(function(){
 	  				$(".file-tab").trigger("click");
 					return 0;
 				}
-			} 
+			}
 		}));
 
 		fileItem.submenu = fileSubmenu;
 
 		var viewSubmenu = new gui.Menu();
 
-		viewSubmenu.append(new gui.MenuItem({ 
+		viewSubmenu.append(new gui.MenuItem({
 			label: 'Change Color Theme',
 			click: function() {
 				jPrompt("(HEX only)\ndefault: "+default_color , "", 'Change UI Color', function(r) {
@@ -266,9 +250,9 @@ $(document).ready(function(){
 					    } else {
 				    		jAlert("Color hex was invalid (e.g. #000 and #000000)", "Invalid HEX")
 				    	}
-				    } 
+				    }
 				});
-			} 
+			}
 		}));
 
 
@@ -280,7 +264,7 @@ $(document).ready(function(){
 		*/
 		var file_tab_menu = new gui.Menu();
 
-		remove_file = new gui.MenuItem({ 
+		remove_file = new gui.MenuItem({
 			label: 'Remove File',
 			click: function(event){
 				$('.file-tab[title=selected]').remove();
@@ -293,10 +277,10 @@ $(document).ready(function(){
 				}
 			}
 		});
-		
+
 		file_tab_menu.append(remove_file);
 
-		rename_file = new gui.MenuItem({ 
+		rename_file = new gui.MenuItem({
 			label: 'Rename File',
 			click: function() {
 				name = $('.file-tab[title=selected]').find('span')[0].innerText.replace("*", '');
@@ -308,20 +292,20 @@ $(document).ready(function(){
 				    	a_path.pop()
 				    	a_path.push("//"+r)
 				    	$(".file-tab[title=selected]").find("label")[0].innerText = a_path.join("\\")
-			    	}  
+			    	}
 				});
 			}
 		});
 
 		file_tab_menu.append(rename_file);
-		
+
 		$(document).on('contextmenu', '.file-tab', function(ev) {
 		  $(this).trigger('click')
 		  file_tab_menu.popup(ev.clientX, ev.clientY);
 		  return false;
 		});
-		
-		helpItem = new gui.MenuItem({ 
+
+		helpItem = new gui.MenuItem({
 			type: 'normal',
 			label: 'Help'
 		});
@@ -335,7 +319,7 @@ $(document).ready(function(){
 				);
 			}
 		}));
-		
+
 		helpSubmenu.append(new gui.MenuItem({
 			label: 'Developer\'s Website',
 			click: function() {
@@ -344,7 +328,7 @@ $(document).ready(function(){
 				);
 			}
 		}));
-		
+
 		helpSubmenu.append(new gui.MenuItem({
 			label: 'Github',
 			click: function() {
@@ -353,22 +337,19 @@ $(document).ready(function(){
 				);
 			}
 		}));
-		
+
 		helpItem.submenu = helpSubmenu
-		
+
 		/**menu item insertion**/
-		
-		if (process.platform == 'win32') {
-			gui.Window.get().menu = menu
-			menu.insert(fileItem, 0);
-			menu.insert(viewItem, 1);
-			menu.append(helpItem);
-		} else {
-			menu.insert(fileItem, 1);
-			menu.insert(viewItem, 3);
-			menu.append(helpItem);
-		}
-		
+		var win = gui.Window.get();
+
+		var menubar = new gui.Menu({ type: 'menubar' });
+
+		menubar.append(fileItem);
+		menubar.append(viewItem);
+		menubar.append(helpItem);
+
+		win.menu = menubar;
 	})();
 });
 
@@ -385,7 +366,7 @@ $(document).ready(function(e){
 		$(".file-tab").attr("title", "none");
 		$(".file-tab").css("color", "#111");
 		codeTag = $(this).find("code")[0];
-		
+
 		code = codeTag.innerText.toString();
 		file = $(this).attr("id").slice(0, $(this).attr("id").length - 1);
 		type = file.split('.').pop()
@@ -394,7 +375,7 @@ $(document).ready(function(e){
 
 		if (type == "html" || type == "xhtml" || type == "htm") {
 			mode = "text/html"
-			
+
 		} else if (type == "css") {
 			mode = "text/css"
 		} else if (type == "js"){
@@ -426,25 +407,25 @@ $(document).ready(function(e){
 	});
 
 	var code_box = $('#default');
-	
+
 	//live updating for html code.
 	$(document).on('keyup', "#default", function() {
 		code_box_text = "";
-        
+
 		for (i = 0; i < $(".CodeMirror-code pre").length; i++) {
 	  		code_box_text += $(".CodeMirror-code pre")[i].innerText
 	  		code_box_text += "\n"
 		}
 
-		console.log(code_box_text)
+		//console.log(code_box_text)
 
 		$(".file-tab[title=selected] code")[0].innerText = code_box_text;
-		
+
 		var doc = document.getElementById("code-view").contentWindow.document;
 		doc.open();
 		doc.write("");
 		doc.write(code_box_text);
-		doc.close();  
+		doc.close();
 
 		e = $(".file-tab[title=selected]").find("span").text();
 
