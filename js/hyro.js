@@ -361,7 +361,10 @@ $(document).ready(function(e) {
         tabMode: "indent",
         matchBrackets: true,
         searchMode: 'inline',
-        viewportMargin: Infinity
+        viewportMargin: Infinity,
+
+		styleActiveLine: true,
+		highlightSelectionMatches: true
     });
 
 
