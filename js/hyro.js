@@ -107,7 +107,7 @@ function updatePreview(cm) {
     // create tmp document offline so that we can add <base> before rendering it
 	var page = document.implementation.createHTMLDocument();
 	page.open();
-	page.write(doc;
+	page.write(doc);
 	page.close();
 
 	var path = $(".file-tab.selected").find("label")[0].innerText;
