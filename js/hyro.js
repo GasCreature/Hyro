@@ -315,7 +315,7 @@ $(document).ready(function(){
 
 		file_tab_menu.append(rename_file);
 		
-		$('.file-tab').live('contextmenu', function(ev) { 
+		$(document).on('contextmenu', '.file-tab', function(ev) {
 		  $(this).trigger('click')
 		  file_tab_menu.popup(ev.clientX, ev.clientY);
 		  return false;
@@ -380,7 +380,7 @@ $(document).ready(function(e){
         mouse.y = event.pageY;
     });
 
-	$(".file-tab").live('click', function(e){
+	$(document).on('click', ".file-tab", function(e){
 
 		$(".file-tab").attr("title", "none");
 		$(".file-tab").css("color", "#111");
@@ -427,9 +427,10 @@ $(document).ready(function(e){
 	var code_box = $('#default');
 	
 	//live updating for html code.
-	$("#default").live('keyup', function() {
+	$(document).on('keyup', "#default", function() {
 		code_box_text = "";
-		for (i=0;i<$(".CodeMirror-code pre").length;i++) {
+        
+		for (i = 0; i < $(".CodeMirror-code pre").length; i++) {
 	  		code_box_text += $(".CodeMirror-code pre")[i].innerText
 	  		code_box_text += "\n"
 		}
@@ -452,5 +453,5 @@ $(document).ready(function(e){
 
 		var file = $(".file-tab[title=selected]").find("span").text()
 		$("#view-file-name").text(file.replace("*", ""));
-	}, false);
+	});
 });
