@@ -20,6 +20,12 @@ html, body {
 	min-height: 100%;
 }
 
+.CodeMirror {
+  /*border: 1px solid #eee;*/
+  height: auto;
+}
+
+
 div::-webkit-scrollbar {
 	width:9px;
 	height:9px;

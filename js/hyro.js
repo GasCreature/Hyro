@@ -414,6 +414,7 @@ $(document).ready(function(e){
 	        tabMode: "indent",
 	        matchBrackets: true,
 	        searchMode: 'inline',
+            viewportMargin: Infinity,
 	        onCursorActivity: function () {
 	          editor.setLineClass(hlLine, null);
 	          hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
