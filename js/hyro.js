@@ -50,15 +50,22 @@ function saveAction() {
 	});
 }
 
-//used to trigger the file input dialog
+// used to trigger the file input dialog
 function chooseFile(name) {
 	var chooser = $(name);
 
 	chooser.trigger('click');
 }
 
-//will append a new file tab with the file name + code
+// append a new file tab with the file name and new doc
+// return file tab element
 function appendFile(text, path, opened) {
+	// defaults when opening an empty tab
+	if (typeof text === "undefined") {
+		text = "<!DOCTYPE html>\n<html>\n<head>\n\n</head>\n<body>\n\n</body>\n</html>";
+		path = "/untitled.html";
+	}
+
 	var file = path.split('/').pop();
 	amount = 0;
 	for (i=0; i<$(".file-tab").length; i++) {
@@ -70,7 +77,9 @@ function appendFile(text, path, opened) {
 	file_tab = document.createElement('div');
 	$(file_tab).attr("class", "file-tab");
 	$(file_tab).attr("id", file+amount);
-	if (opened == true) $(file_tab).attr("alt", "open");
+
+	if (opened == true)
+		$(file_tab).attr("alt", "open");
 
 	span = document.createElement('span')
 	$(span).text(file)
@@ -79,15 +88,13 @@ function appendFile(text, path, opened) {
 	$(file_path).css("display", "none");
 	$(file_path).text(path);
 
-	code = document.createElement('code');
-	$(code).css("display", "none");
-	$(code).text(text);
-
 
 	$(file_tab).append($(span));
-	$(file_tab).append($(code));
 	$(file_tab).append($(file_path));
 	$("#file-nav").append($(file_tab));
+
+	// create new doc and store it
+	return $(file_tab).data("cm-doc", new CodeMirror.Doc(text));
 }
 
 
@@ -119,8 +126,7 @@ $(document).ready(function(){
 		fileSubmenu.append(new gui.MenuItem({
 			label: 'New File',
 			click: function() {
-				appendFile("<!DOCTYPE html>\n<html>\n<head>\n\n</head>\n<body>\n\n</body>\n</html>", "/untitled.html", false);
-      			$(".file-tab").trigger("click");
+				appendFile().trigger("click");
 			}
 		}));
 
@@ -223,8 +229,7 @@ $(document).ready(function(){
 				if ($(".file-tab")[0]) {
 					return;
 				} else {
-					appendFile("Enter your code here...", "/untitled.html", false);
-	  				$(".file-tab").trigger("click");
+					appendFile().trigger("click");
 					return 0;
 				}
 			}
@@ -271,8 +276,7 @@ $(document).ready(function(){
 				if ($(".file-tab")[0]) {
 					return;
 				} else {
-					appendFile("Enter your code here...", "/untitled.html", false);
-	  				$(".file-tab").trigger("click");
+					appendFile().trigger("click");
 					return 0;
 				}
 			}
@@ -340,7 +344,7 @@ $(document).ready(function(){
 
 		helpItem.submenu = helpSubmenu
 
-		/**menu item insertion**/
+		// menu item insertion
 		var win = gui.Window.get();
 
 		var menubar = new gui.Menu({ type: 'menubar' });
@@ -353,21 +357,35 @@ $(document).ready(function(){
 	})();
 });
 
-$(document).ready(function(e){
-
-	var mouse = { x: -1, y: -1 };
-    $(document).mousemove(function(event) {
-        mouse.x = event.pageX;
-        mouse.y = event.pageY;
+$(document).ready(function(e) {
+	var cm = CodeMirror(document.getElementById("code-box"), {
+        lineNumbers: true,
+        tabMode: "indent",
+        matchBrackets: true,
+        searchMode: 'inline',
+        viewportMargin: Infinity
     });
 
-	$(document).on('click', ".file-tab", function(e){
 
+	$(document).on('click', ".file-tab", function(e) {
+
+		// previous tab (not available on start), store doc there
+		var prev = $(".file-tab[title=selected]")
+			.data("cm-doc", cm.getDoc());
+
+		// all tabs
 		$(".file-tab").attr("title", "none");
-		$(".file-tab").css("color", "#111");
-		codeTag = $(this).find("code")[0];
 
-		code = codeTag.innerText.toString();
+		// clicked tab, read doc from it
+		$(this).attr("title", "selected");
+
+		if ($(this).is(prev)) {
+			console.log("already shown");
+			return;
+		}
+
+		cm.swapDoc($(this).data("cm-doc"));
+
 		file = $(this).attr("id").slice(0, $(this).attr("id").length - 1);
 		type = file.split('.').pop()
 
@@ -375,7 +393,6 @@ $(document).ready(function(e){
 
 		if (type == "html" || type == "xhtml" || type == "htm") {
 			mode = "text/html"
-
 		} else if (type == "css") {
 			mode = "text/css"
 		} else if (type == "js"){
@@ -384,51 +401,23 @@ $(document).ready(function(e){
 			mode = "text/plain"
 		}
 
-		//gen = util.format(codemirror_code, "default", code, mode)
-		_default = $("#default");
-		_default.html("")
-
-		var codemirror_obj = CodeMirror(document.getElementById("default"), {
-	        value: code,
-	        mode:  mode,
-	        lineNumbers: true,
-	        tabMode: "indent",
-	        matchBrackets: true,
-	        searchMode: 'inline',
-            viewportMargin: Infinity,
-	        onCursorActivity: function () {
-	          editor.setLineClass(hlLine, null);
-	          hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
-	        }
-	    });
-
-		$(this).attr("title", "selected");
-		$(this).css("color", color);
+		cm.setOption("mode", mode);
 	});
 
-	var code_box = $('#default');
 
-	//live updating for html code.
-	$(document).on('keyup', "#default", function() {
-		code_box_text = "";
+	// live updating for html code.
 
-		for (i = 0; i < $(".CodeMirror-code pre").length; i++) {
-	  		code_box_text += $(".CodeMirror-code pre")[i].innerText
-	  		code_box_text += "\n"
-		}
+    cm.on("change", function() {
+		var doc = cm.getDoc();
 
-		//console.log(code_box_text)
-
-		$(".file-tab[title=selected] code")[0].innerText = code_box_text;
-
-		var doc = document.getElementById("code-view").contentWindow.document;
-		doc.open();
-		doc.write("");
-		doc.write(code_box_text);
-		doc.close();
+		var preview = document.getElementById("code-view").contentWindow.document;
+		preview.open();
+		preview.write(doc.getValue());
+		preview.close();
 
 		e = $(".file-tab[title=selected]").find("span").text();
 
+		// add "*" if contents are modified
 		if (e[e.length - 1] != "*") {
 			$(".file-tab[title=selected]").find("span").text($(".file-tab[title=selected]").find("span").text() + "*");
 		}
@@ -436,4 +425,7 @@ $(document).ready(function(e){
 		var file = $(".file-tab[title=selected]").find("span").text()
 		$("#view-file-name").text(file.replace("*", ""));
 	});
+
+
+	appendFile().trigger("click");
 });
