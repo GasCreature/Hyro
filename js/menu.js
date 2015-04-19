@@ -4,7 +4,7 @@ var color = "#E36D6D";
 var default_color = "#E36D6D";
 
 function checkHex(value){
-	return /^#([A-Fa-f0-9]{3}$)|([A-Fa-f0-9]{6}$)/.test(value)
+    return /^#([A-Fa-f0-9]{3}$)|([A-Fa-f0-9]{6}$)/.test(value)
 }
 
 exports.menubar = function (gui, window, openAction, saveAction) {
@@ -14,7 +14,7 @@ exports.menubar = function (gui, window, openAction, saveAction) {
 
     // used to trigger the file input dialog in nw.js
     function chooseFile(chooser) {
-    	chooser.trigger('click');
+        chooser.trigger('click');
     }
 
 
@@ -49,18 +49,20 @@ exports.menubar = function (gui, window, openAction, saveAction) {
                 var files = $('#openDialog')[0].files;
 
                 for (var i = 0; i < files.length; i++) {
-					var file = files[i];
-					var text = fs.readFileSync(file.path).toString();
+                    var file = files[i];
+                    var text = fs.readFileSync(file.path).toString();
                     openAction(text, file.path, true);
                 }
-				$(this).val(''); // reset filedialog
+                $(this).val(''); // reset filedialog
             })
         }
     }));
 
     fileSubmenu.append(new gui.MenuItem({
         label: 'Save',
-        click: saveAction
+        click: saveAction,
+        key: "s",
+        modifiers: "ctrl"
     }));
 
     save = new gui.MenuItem({
@@ -73,20 +75,19 @@ exports.menubar = function (gui, window, openAction, saveAction) {
 
             chooseFile(saveDialog);
 
-			saveDialog.change(function(e) {
+            saveDialog.change(function(e) {
                 var files = $('#saveDialog')[0].files;
 
-				if (files.length == 0)	// cancel clicked
-					return;
+                if (files.length == 0)    // cancel clicked
+                    return;
 
                 new_path = files[0].path;
                 new_name = files[0].name;
 
-				saveAction(new_path);
+                saveAction(new_path);
 
-				$(this).val(''); // reset filedialog
+                $(this).val(''); // reset filedialog
             });
-
         }
     });
 
@@ -113,13 +114,17 @@ exports.menubar = function (gui, window, openAction, saveAction) {
         label: 'Close File',
         click: function() {
             $('.file-tab.selected').remove();
+
             if ($(".file-tab")[0]) {
+                $(".file-tab:first").trigger("click");
                 return;
             } else {
                 openAction().trigger("click");
                 return 0;
             }
-        }
+        },
+        key: "w",
+        modifiers: "ctrl"
     }));
 
     fileItem.submenu = fileSubmenu;
