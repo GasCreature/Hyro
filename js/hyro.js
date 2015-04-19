@@ -6,43 +6,55 @@ Developer: Jared Wright @jawerty
 
 //require's and global variables
 var gui = require('nw.gui');
+
 var fs = require('fs');
 var util = require('util');
 
 var menubar = require('./js/menu.js').menubar;
 
-baseDIR = process.env.HOME
-// console.log(baseDIR);
+BASE_DIR = process.env.HOME
 
 
-//saveAction will be used for hotkeys (future) as well as the 'Save' menu item
-function saveAction() {
-	e = $(".file-tab.selected").find("span").text();
+function getMode(file) {
+	type = file.split('.').pop();
 
-	if (e[e.length - 1] == "*") {
-		$(".file-tab.selected").find("span").text(e.substring(0, e.length - 1))
-	}
-
-	selected = $(".file-tab.selected")
-
-	if (selected.attr("alt") == "open") {
-		path = $(".file-tab.selected").find("label")[0].innerText;
+	if (type == "html" || type == "xhtml" || type == "htm") {
+		mode = "text/html";
+	} else if (type == "css") {
+		mode = "text/css";
+	} else if (type == "js"){
+		mode = "javascript";
 	} else {
-		path = baseDIR + $(".file-tab.selected").find("label")[0].innerText;
-		console.log(path);
-		$(file_tab).attr("alt", "open");
+		mode = "text/plain";
 	}
 
-	text = $(".file-tab.selected").find("code")[0].innerText;
-	file = $(".file-tab.selected").find("span")[0].innerText;
+	return mode;
+}
+
+//saveAction will be used for hotkeys (future) as well as the 'Save' and 'Save As' menu items
+function saveAction(filename) {
+	var selected = $(".file-tab.selected");
+	var path = filename;
+
+	if (typeof path === "undefined") {
+		path = selected.find("label")[0].innerText;
+	}
+
+	var text = selected.data("cm-doc").getValue();
+
+	console.log("## saving " + path);
 
 	fs.openSync(path, 'w');
-	fs.writeFile(path, text, function(err){
+	fs.writeFile(path, text, function(err) {
 		if (err) throw err;
-		console.log("saved "+ file + " " + path);
 
-		$(".file-tab.selected").find("span").text(file);
-		$(".file-tab.selected").find("code").text(text)
+		selected.attr("alt", "open");
+
+		// remove change star
+		var e = selected.find("span").text();
+		if (e[e.length - 1] == "*") {
+			selected.find("span").text(e.substring(0, e.length - 1))
+		}
 	});
 }
 
@@ -50,10 +62,12 @@ function saveAction() {
 // append a new file tab with the file name and new doc
 // return file tab element
 function openAction(text, path, opened) {
+	console.log("## opening " + path);
+
 	// defaults when opening an empty tab
 	if (typeof text === "undefined") {
 		text = "<!DOCTYPE html>\n<html>\n<head>\n\n</head>\n<body>\n\n</body>\n</html>";
-		path = "/untitled.html";
+		path = BASE_DIR + "/untitled.html";
 	}
 
 	var file = path.split('/').pop();
@@ -65,10 +79,10 @@ function openAction(text, path, opened) {
 	}
 
 	file_tab = document.createElement('div');
-	$(file_tab).attr("class", "file-tab");
-	$(file_tab).attr("id", file+amount);
+	$(file_tab).addClass("file-tab");
+	$(file_tab).attr("id", file + amount);
 
-	if (opened == true)
+	if (opened === true)
 		$(file_tab).attr("alt", "open");
 
 	span = document.createElement('span')
@@ -84,7 +98,7 @@ function openAction(text, path, opened) {
 	$("#file-nav").append($(file_tab));
 
 	// create new doc and store it
-	return $(file_tab).data("cm-doc", new CodeMirror.Doc(text));
+	return $(file_tab).data("cm-doc", new CodeMirror.Doc(text, getMode(file)));
 }
 
 function updatePreview(cm) {
@@ -129,30 +143,15 @@ $(document).ready(function() {
 		$(this).addClass("selected");
 
 		if ($(this).is(prev)) {
-			console.log("already shown");
 			return;
 		}
 
-		cm.swapDoc($(this).data("cm-doc"));
-
 		file = $(this).attr("id").slice(0, $(this).attr("id").length - 1);
-		type = file.split('.').pop()
 
 		$("#view-file-name").text(file);
 
-		if (type == "html" || type == "xhtml" || type == "htm") {
-			mode = "text/html"
-		} else if (type == "css") {
-			mode = "text/css"
-		} else if (type == "js"){
-			mode = "javascript"
-		} else {
-			mode = "text/plain"
-		}
-
-		cm.setOption("mode", mode);
-
-		// trigger update
+		var doc = $(this).data("cm-doc");
+		cm.swapDoc(doc);
 	});
 
 

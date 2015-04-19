@@ -12,10 +12,8 @@ exports.menubar = function (gui, window, openAction, saveAction) {
     $ = window.jQuery;
     document = window.document;
 
-    // used to trigger the file input dialog
-    function chooseFile(name) {
-    	var chooser = $(name);
-
+    // used to trigger the file input dialog in nw.js
+    function chooseFile(chooser) {
     	chooser.trigger('click');
     }
 
@@ -44,29 +42,18 @@ exports.menubar = function (gui, window, openAction, saveAction) {
     fileSubmenu.append(new gui.MenuItem({
         label: 'Open',
         click: function() {
-            chooseFile('#openDialog');
-
-            var x = 0
             openDialog = $('#openDialog')
-            $('#openDialog').change(function(e) {
+            chooseFile(openDialog);
 
-                var paths = [];
+            openDialog.change(function(e) {
                 var files = $('#openDialog')[0].files;
 
                 for (var i = 0; i < files.length; i++) {
-                    paths.push(files[i].path);
+					var file = files[i];
+					var text = fs.readFileSync(file.path).toString();
+                    openAction(text, file.path, true);
                 }
-
-                paths.forEach(function(path) {
-                    x += 1;
-                    if (x > 1) return false;
-                    console.log(path);
-                    buffer_data = fs.readFileSync(path);
-                    text = buffer_data + '';
-                    openAction(text, path, true);
-                    openDialog.replaceWith(openDialog = openDialog.clone(true));
-                    return true;
-                });
+				$(this).val(''); // reset filedialog
             })
         }
     }));
@@ -79,36 +66,27 @@ exports.menubar = function (gui, window, openAction, saveAction) {
     save = new gui.MenuItem({
         label: 'Save As',
         click: function() {
-            e = $(".file-tab.selected").find("span").text();
-
-            if (e[e.length - 1] == "*") {
-                $(".file-tab.selected").find("span").text(e.substring(0, e.length - 1))
-            }
+            path = $(".file-tab.selected").find("label")[0].innerText;
 
             saveDialog = $("#saveDialog");
-            path = $(".file-tab.selected").find("label")[0].innerText;
             saveDialog.attr("nwworkingdir", path)
 
-            chooseFile('#saveDialog');
+            chooseFile(saveDialog);
 
-
-            $("#saveDialog").change(function(e){
+			saveDialog.change(function(e) {
                 var files = $('#saveDialog')[0].files;
+
+				if (files.length == 0)	// cancel clicked
+					return;
+
                 new_path = files[0].path;
                 new_name = files[0].name;
-                text = $(".file-tab.selected").find("code")[0].innerText;
-                console.log("\n"+text+"\n")
-                fs.writeFile(new_path, text, function(err) {
-                    if (err) throw err;
-                    console.log("saved "+ new_name + " " + new_path);
 
+				saveAction(new_path);
 
-                    $(".file-tab.selected").find("span").text(new_name);
-                    $(".file-tab.selected").find("label").text(new_path);
-                    saveDialog.replaceWith(saveDialog=saveDialog.clone(true));
-                });
-
+				$(this).val(''); // reset filedialog
             });
+
         }
     });
 
