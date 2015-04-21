@@ -1,19 +1,51 @@
 ![image not loaded...](https://raw.github.com/michael-brade/Hyro/master/Hyro_title.png)
 
-A Live, desktop, HTML5 text-editor. You can now code HTML5 websites in real-time on your desktop.
+A live, desktop HTML5 text-editor. You can now code HTML5 websites in real-time on your desktop.
+
+# Improvements to Original Hyro
+
+- Splitter to make the view adjustable
+- Monokai theme
+- Nice scrollbars
+- Improvements in load and save routines
+- Keyboard shortcuts for Save and Close
+- emmet enabled
+- use only one CodeMirror instance with several Documents
+
 
 
 # Install
-Hyro is compatible for all Platforms: Windows, Mac, Linux (32-bit).
 
-**or** if you're a node.js (node-webkit) developer
-
-Clone the github repository 'michael-brade/Hyro' and hack as you please.
+Hyro is compatible with all Platforms: Windows, Mac, Linux (32-bit, 64-bit).
 
 The current version is 0.1.0.
 
+Clone the github repository 'michael-brade/Hyro', then
+
+```
+npm install
+```
+
+and then start it with `npm start` or `nw`.
+
+
+To build standalone binaries, change `"developmentMode"` in package.json to `false` and call
+
+```
+grunt build
+```
+
+
+# Development
+
+Hyro is built with node-webkit and jQuery.
+
+If you want, hack away as you please.
+
+
 # Usage
-It has a basic UI. You type in your code on the **left** and see what your HTML looks like on the **right**.
+
+It has a basic splitter UI. You type in your code on the **left** and see what your HTML looks like on the **right**.
 
 ![image not loaded...](https://raw.github.com/michael-brade/Hyro/master/screenshots/2.png)
 
@@ -29,20 +61,13 @@ Overall, the Hyro app is a lightweight development tool that I made to make fron
 
 Thank you and happy hacking.
 
-# Development
-Hyro is built with node-webkit and jquery.
-
-### Building:
-````
-npm install
-grunt build
-```
 
 # LICENSE
 
 The MIT License (MIT)
 
 Copyright (c) 2013 Jared Wright
+
 Copyright (c) 2015 Michael Brade
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
