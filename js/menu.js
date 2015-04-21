@@ -1,16 +1,11 @@
-var fs = require('fs');
-
 var color = "#E36D6D";
 var default_color = "#E36D6D";
 
-function checkHex(value){
+function checkHex(value) {
     return /^#([A-Fa-f0-9]{3}$)|([A-Fa-f0-9]{6}$)/.test(value)
 }
 
-exports.menubar = function (gui, window, openAction, saveAction) {
-
-    $ = window.jQuery;
-    document = window.document;
+function menubar() {
 
     // used to trigger the file input dialog in nw.js
     function chooseFile(chooser) {
@@ -78,7 +73,7 @@ exports.menubar = function (gui, window, openAction, saveAction) {
             saveDialog.change(function(e) {
                 var files = $('#saveDialog')[0].files;
 
-                if (files.length == 0)    // cancel clicked
+                if (files.length == 0) // cancel clicked
                     return;
 
                 new_path = files[0].path;
@@ -134,16 +129,16 @@ exports.menubar = function (gui, window, openAction, saveAction) {
     viewSubmenu.append(new gui.MenuItem({
         label: 'Change Color Theme',
         click: function() {
-            jPrompt("(HEX only)\ndefault: " + default_color , "", 'Change UI Color', function(r) {
-                if(r) {
+            jPrompt("(HEX only)\ndefault: " + default_color, "", 'Change UI Color', function(r) {
+                if (r) {
                     if (checkHex(r)) {
                         color = r;
                         $('.file-tab.selected').trigger('click');
                         $("#file-nav").css("background-color", r)
-                        $('.file-tab').hover(function(){
-                              $(this).css('color', r);
-                               return;
-                           });
+                        $('.file-tab').hover(function() {
+                            $(this).css('color', r);
+                            return;
+                        });
                     } else {
                         jAlert("Color hex was invalid (e.g. #000 and #000000)", "Invalid HEX")
                     }
@@ -163,7 +158,7 @@ exports.menubar = function (gui, window, openAction, saveAction) {
 
     remove_file = new gui.MenuItem({
         label: 'Remove File',
-        click: function(event){
+        click: function(event) {
             $('.file-tab.selected').remove();
             if ($(".file-tab")[0]) {
                 return;
@@ -182,11 +177,11 @@ exports.menubar = function (gui, window, openAction, saveAction) {
             name = $('.file-tab.selected').find('span')[0].innerText.replace("*", '');
             msg = "Rename " + name + "?";
             jPrompt('New name: ', "", msg, function(r) {
-                if(r) {
+                if (r) {
                     $('.file-tab.selected').find('span')[0].innerText = r + "*";
                     a_path = $(".file-tab.selected").find("label")[0].innerText.split("\\")
                     a_path.pop()
-                    a_path.push("//"+r)
+                    a_path.push("//" + r)
                     $(".file-tab.selected").find("label")[0].innerText = a_path.join("\\")
                 }
             });
@@ -196,9 +191,9 @@ exports.menubar = function (gui, window, openAction, saveAction) {
     file_tab_menu.append(rename_file);
 
     $(document).on('contextmenu', '.file-tab', function(ev) {
-      $(this).trigger('click')
-      file_tab_menu.popup(ev.clientX, ev.clientY);
-      return false;
+        $(this).trigger('click')
+        file_tab_menu.popup(ev.clientX, ev.clientY);
+        return false;
     });
 
     helpItem = new gui.MenuItem({
@@ -211,7 +206,7 @@ exports.menubar = function (gui, window, openAction, saveAction) {
         label: 'About',
         click: function() {
             var new_win = gui.Window.get(
-              window.open('http://jawerty.github.com/Hyro')
+                window.open('http://jawerty.github.com/Hyro')
             );
         }
     }));
@@ -220,7 +215,7 @@ exports.menubar = function (gui, window, openAction, saveAction) {
         label: 'Developer\'s Website',
         click: function() {
             var new_win = gui.Window.get(
-              window.open('http://jawerty.github.com/')
+                window.open('http://jawerty.github.com/')
             );
         }
     }));
@@ -229,7 +224,7 @@ exports.menubar = function (gui, window, openAction, saveAction) {
         label: 'Github',
         click: function() {
             var new_win = gui.Window.get(
-              window.open('https://github.com/jawerty/Hyro')
+                window.open('https://github.com/jawerty/Hyro')
             );
         }
     }));
@@ -238,7 +233,9 @@ exports.menubar = function (gui, window, openAction, saveAction) {
 
     // menu item insertion
 
-    var menubar = new gui.Menu({ type: 'menubar' });
+    var menubar = new gui.Menu({
+        type: 'menubar'
+    });
 
     menubar.append(fileItem);
     menubar.append(viewItem);

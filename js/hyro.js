@@ -10,8 +10,6 @@ var gui = require('nw.gui');
 var fs = require('fs');
 var util = require('util');
 
-var menubar = require('./js/menu.js').menubar;
-
 BASE_DIR = process.env.HOME
 
 
@@ -130,7 +128,7 @@ function updatePreview(cm) {
 $(document).ready(function() {
 
 	// create menubar
-	gui.Window.get().menu = menubar(gui, window, openAction, saveAction);
+	gui.Window.get().menu = menubar();
 
 
 	// create CodeMirror
