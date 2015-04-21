@@ -139,7 +139,8 @@ $(document).ready(function() {
         tabMode: "indent",
         matchBrackets: true,
         searchMode: 'inline',
-        viewportMargin: Infinity,
+
+		theme: 'monokai',
 
 		styleActiveLine: true,
 		highlightSelectionMatches: true
