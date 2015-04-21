@@ -4,9 +4,6 @@
 }
 
 * {
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
-	box-sizing: border-box;
 	font-family: "inconsolata";
   	font-size: 15px;
 }
@@ -22,46 +19,46 @@ html, body {
 }
 
 .CodeMirror {
-  	/*border: 1px solid #eee;*/
-  	height: auto;
+  	height: 100%;
 }
-
-.CodeMirror-hscrollbar {
-	bottom: 0;
-	right: 50% !important;
-	position:fixed;
-}
-
 
 .CodeMirror-activeline-background {
   	background: #e8f2ff;
 }
 
 .cm-matchhighlight {
-	background-color: yellow;
-}
-
-div::-webkit-scrollbar {
-	width:9px;
-	height:9px;
-	background-color:#aaa;
+	background-color: rgba(230,190,33,.3);
 }
 
 
-div::-webkit-scrollbar-track-piece {
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: rgba(113,112,107,0.5);
+	-webkit-border-radius: 5px;
+}
+::-webkit-scrollbar-trac-piece {
 	background-color:#fff;
 	-webkit-border-radius:0;
 }
 
-div::-webkit-scrollbar-thumb:vertical {
-	height:50px;
-	background-color:#777;
+::-webkit-scrollbar-thumb:vertical {
+	background-color: rgba(65,130,196,.5);
+	-webkit-border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:horizontal {
+	background-color: rgba(65,130,196,.5);
+	-webkit-border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:vertical:hover,
+::-webkit-scrollbar-thumb:horizontal:hover {
+	background: #4182C4;
 }
 
-div::-webkit-scrollbar-thumb:horizontal {
-	width:50px;
-	background-color:#777;
-}
 
 #wrapper {
 	height: 100%;
