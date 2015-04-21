@@ -190,6 +190,10 @@ $(document).ready(function() {
 		updatePreview(instance);
 	});
 
+	// splitter
+	$("#box-wrapper").split({orientation: 'vertical', limit:200});
+
+
 	// initial tab
 	openAction().trigger("click");
 });
